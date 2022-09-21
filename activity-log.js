@@ -7,9 +7,10 @@ export default function({toggleLogIn, myID, useCollection}) { return {
   }),
 
   methods: {
-    removeEverything() {
+    async removeEverything() {
       if (confirm("Are you SURE you want to remove all your graffiti data? This cannot be undone")) {
-        this.everything.removeMine()
+        await this.everything.removeMine()
+        alert("Everything deleted!")
       }
     },
 
@@ -25,7 +26,7 @@ export default function({toggleLogIn, myID, useCollection}) { return {
     },
 
     processFile(file) {
-      if (!confirm("uploading will not remove existing data but it will replace data with existing IDs, for example data that you have edited. are you sure you want to continue?")) return
+      if (!confirm("Uploading will not remove existing data but it will replace data with existing IDs, for example data that you have edited. Are you sure you want to continue?")) return
 
       const reader = new FileReader()
 
@@ -45,6 +46,8 @@ export default function({toggleLogIn, myID, useCollection}) { return {
         for (const object of objects) {
           await this.everything.update(object)
         }
+
+        alert("Everything uploaded!")
       } catch(e) {
         alert(JSON.stringify(e))
       }
@@ -64,14 +67,14 @@ export default function({toggleLogIn, myID, useCollection}) { return {
     </nav>
 
     <h1>
-      activity log
+      Activity Log
     </h1>
 
     <template v-if="!myID">
       <menu>
         <li>
           <button @click="toggleLogIn">
-            🚪 log in 🚪
+            🚪 Log In 🚪
           </button>
         </li>
       </menu>
@@ -80,31 +83,22 @@ export default function({toggleLogIn, myID, useCollection}) { return {
       <menu>
         <li>
           <button @click="downloadEverything">
-            💾 download all data 💾
+            💾 Download All Data 💾
           </button>
         </li>
 
         <li>
           <label>
             <input type="file" @change="processFile($event.target.files[0])" />
-            🔄 upload data 🔄
+            🔄 Upload Data 🔄
           </label>
         </li>
 
         <li>
           <button @click="removeEverything">
-            ❌ remove all data ❌
+            ❌ Remove All Data ❌
           </button>
         </li>
       </menu>
-
-      <ul v-if="everything.length">
-        <li v-for="object in everything" :key="object._id">
-          {{object}}
-        </li>
-      </ul>
-      <p v-else>
-        you don't have any graffiti data!
-      </p>
     </template>`
 }}
